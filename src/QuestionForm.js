@@ -1,45 +1,42 @@
-import React, { useState } from 'react';
+import { React, useState } from 'react';
+import axios from 'axios';
+
 const QuestionForm = () => {
   const [question, setQuestion] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await fetch('http://localhost:5000/api/questions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ question }),
-      });
+    const Confirm = window.confirm('Submit the question?');
 
-      if (response.ok) {
-        console.log('Question submitted successfully');
+    if (Confirm) {
+      try {
+        await axios.post('http://localhost:3001/question', {
+          question,
+          status: 'pending',
+        });
         setQuestion('');
-      } else {
-        console.error('Error submitting question');
       }
-    } catch (error) {
-      console.error('Error submitting question:', error);
+      
+      catch (error) {
+        console.error('Error submitting the question');
+        window.alert('Error submitting the question.');
+      }
     }
   };
 
   return (
-    <div>
-      <h1>Question Form</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Question:
-          <input
-            type="text"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-          />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+      <div>
+        <h1>Question Form</h1>
+        <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+            />
+          <button type="submit">Submit</button>
+        </form>
+      </div>
   );
 };
 
